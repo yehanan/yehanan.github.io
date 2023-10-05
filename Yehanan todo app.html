@@ -38,6 +38,21 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Add your custom JavaScript -->
     <script>
+        // Function to load tasks from local storage
+        function loadTasksFromLocalStorage() {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks.forEach(task => {
+                addTaskToList(task);
+            });
+        }
+
+        // Function to save tasks to local storage
+        function saveTasksToLocalStorage() {
+            const taskItems = document.querySelectorAll('#taskList li span');
+            const tasks = [...taskItems].map(item => item.textContent);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
         // JavaScript for task list
         function addTaskToList(taskText) {
             const taskList = document.getElementById('taskList');
@@ -60,6 +75,8 @@
                 completedTaskList.appendChild(li);
                 // Disable the complete button for completed tasks
                 completeButton.disabled = true;
+                // Save the updated tasks to local storage
+                saveTasksToLocalStorage();
             });
 
             const deleteButton = li.querySelector('.btn-danger');
@@ -70,6 +87,8 @@
                 } else {
                     taskList.removeChild(li);
                 }
+                // Save the updated tasks to local storage
+                saveTasksToLocalStorage();
             });
         }
 
@@ -79,7 +98,14 @@
             if (taskInput.trim() !== '') {
                 addTaskToList(taskInput);
                 document.getElementById('taskInput').value = '';
+                // Save the updated tasks to local storage
+                saveTasksToLocalStorage();
             }
+        });
+
+        // Load tasks from local storage when the page loads
+        window.addEventListener('load', function () {
+            loadTasksFromLocalStorage();
         });
     </script>
 </body>
